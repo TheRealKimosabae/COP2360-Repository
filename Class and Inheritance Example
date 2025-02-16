@@ -1,0 +1,46 @@
+using System; 
+
+
+//Parent Class Example 
+public class Person 
+{ 
+   public string FirstName {get; set;}
+   public string LastName {get; set;}
+   
+   public Person(string firstName, string lastName)
+   {
+       FirstName = firstName;
+       LastName = lastName;
+   }
+}
+
+// Child Class Example, Inheriting from Parent Class (Person)
+
+public class Child : Person
+{
+    // Constructor calling the bass class contructor 
+    public Child(string firstName, string lastName)
+    :base(firstName, lastName)
+    
+    {
+        
+    }
+}
+
+class Program
+
+
+{
+    static void Main()
+    {
+    // creating an instance of a Person
+    Person person1 = new Person("Kimosabae", "Grant");
+    // creating an instance of a Child
+    Child child1 = new Child("Charles", "Xavier");
+    //Printing the Details
+    Console.WriteLine(person1.FirstName + " " +  person1.LastName);
+    // No, I don't have kids
+    Console.WriteLine("Has 0 Children Named " + child1.FirstName + " " + child1.LastName);
+    }
+}
+
