@@ -1,0 +1,153 @@
+using System;
+using System.Collections.Generic;
+
+class Wordz
+{
+    public static void Main()
+    {
+        // creating a dictionary to store words as keys and difinitions as values 
+        Dictionary<string, string> dictionary = new Dictionary<string, string>();
+
+        //using a stack to put words in the order they are entered 
+        Stack<string> wordStack = new Stack<string>();
+
+        // Add initial words and their definitions to the dictionary and the stack
+        AddWord("surjective", "adj. A set of surjective functions. Tautological", dictionary, wordStack);
+        AddWord("electron", "n. An elementary particle consisting of a charge of negative electricity equivalent to a unit of one coulomb.", dictionary, wordStack);
+        AddWord("emissive", "n. A putting into circulation", dictionary, wordStack);
+        AddWord("hboob", "n. a strong desert sandstorm", dictionary, wordStack);
+        AddWord("gull", "v. to deceive, trick, or cheat", dictionary, wordStack);
+        AddWord("primaveral", "adj. pertaining to the early springtime", dictionary, wordStack);
+        AddWord("paregmenon", "adj. the juxtaposition of words that have a common root", dictionary, wordStack);
+
+        // Main menu 
+        while (true)
+        {
+            Console.WriteLine("\n--- Dictionary Menu ---");
+            Console.WriteLine("1. Add a word");
+            Console.WriteLine("2. Remove a word");
+            Console.WriteLine("3. Look up a definition");
+            Console.WriteLine("4. Display all wordz (Stack Order)");
+            Console.WriteLine("5. Display all wordz (Keys Sorted)");
+            Console.WriteLine("6. Exit");
+            Console.Write("Enter your choice: ");
+
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1": //allows one to add words to the dictionary
+                    Console.Write("Enter a New Word!: ");
+                    string word = Console.ReadLine();
+                    Console.Write("Enter the definition: ");
+                    string definition = Console.ReadLine();
+                    AddWord(word, definition, dictionary, wordStack);
+                    Console.WriteLine($"'{word}' has been added to the Lexicon.");
+                    break;
+
+                case "2": // allows one to remove a word from the dictionary
+                    Console.Write("Enter the word to remove: ");
+                    string wordToRemove = Console.ReadLine();
+                    RemoveWord(wordToRemove, dictionary, wordStack);
+                    break;
+
+                case "3": // allows one to look up a word stored in the dictionary
+                    Console.Write("Enter the word to look up: ");
+                    string wordToLookUp = Console.ReadLine();
+                    if (dictionary.ContainsKey(wordToLookUp))
+                    {
+                        Console.WriteLine($"Definition of '{wordToLookUp}': {dictionary[wordToLookUp]}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"'{wordToLookUp}' does not exist in this Lexicon.");
+                    }
+                    break;
+
+                case "4": // Display all available wordz
+                    Console.WriteLine("\nWords in the Dictionary (Stack Order - LIFO):");
+                    foreach (var wordInStack in wordStack)
+                    {
+                        Console.WriteLine(wordInStack);
+                    }
+                    break;
+
+                case "5": // Display all wordz (Keys Sorted)
+                    Console.WriteLine("\nDictionary Definitions (Sorted by Keys):");
+                    List<string> sortedKeys = GetSortedKeys(dictionary);
+                    foreach (var key in sortedKeys)
+                    {
+                        Console.WriteLine($"{key}: {dictionary[key]}");
+                    }
+                    break;
+
+                case "6": // Exit
+                    Console.WriteLine("Exiting the Dictionary. Laterz!");
+                    return;
+
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+    }
+
+    // method to add a word to both the dictionary and the stack
+    private static void AddWord(string word, string definition, Dictionary<string, string> dictionary, Stack<string> wordStack)
+    {
+        if (!dictionary.ContainsKey(word))
+        {
+            dictionary.Add(word, definition);
+            wordStack.Push(word); // Add the word to the top of the stack
+        }
+        else
+        {
+            Console.WriteLine($"'{word}' already exists in the dictionary.");
+        }
+    }
+
+    // method to remove a word from both the dictionary and the stack
+    private static void RemoveWord(string word, Dictionary<string, string> dictionary, Stack<string> wordStack)
+    {
+        if (dictionary.ContainsKey(word))
+        {
+            // Remove the word from the dictionary
+            dictionary.Remove(word);
+
+            // Remove the word from the stack
+            Stack<string> tempStack = new Stack<string>();
+            while (wordStack.Count > 0)
+            {
+                string currentWord = wordStack.Pop();
+                if (currentWord != word)
+                {
+                    tempStack.Push(currentWord); // Keep words that are not being removed
+                }
+            }
+
+            // Rebuild the original stack
+            while (tempStack.Count > 0)
+            {
+                wordStack.Push(tempStack.Pop());
+            }
+
+            Console.WriteLine($"'{word}' has been removed from the dictionary and stack.");
+        }
+        else
+        {
+            Console.WriteLine($"'{word}' does not exist in the dictionary.");
+        }
+    }
+
+    //  method to get sorted keys from the dictionary
+    private static List<string> GetSortedKeys(Dictionary<string, string> dictionary)
+    {
+        // Create a list of keys
+        List<string> keys = new List<string>(dictionary.Keys);
+
+        // Sort the keys alphabetically
+        keys.Sort();
+
+        return keys;
+    }
+}
