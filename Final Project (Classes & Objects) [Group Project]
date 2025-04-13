@@ -1,0 +1,109 @@
+using System;
+using System.Collections.Generic;
+
+public class Contractor // Contractor Class
+{
+    public string Name { get; set; } 
+    public string Number { get; set; }
+    public DateTime StartDate { get; set; }
+
+    public Contractor() { }
+    public Contractor(string name, string number, DateTime startDate)
+    {
+        Name = name;
+        Number = number;
+        StartDate = startDate;
+    }
+}
+
+public class Subcontractor : Contractor // Subcontractor derived Class
+{
+    public int Shift { get; set; } // 1=dayshift, 2=nightshift
+    public double HourlyPayRate { get; set; }
+
+    public Subcontractor() { }
+    public Subcontractor(string name, string number, DateTime startDate, int shift, double payRate)
+        : base(name, number, startDate)
+    {
+        Shift = shift;
+        HourlyPayRate = payRate;
+    }
+
+    public float CalculatePay(float hoursWorked)
+    {
+        float pay = (float)(hoursWorked * HourlyPayRate);
+        if (Shift == 2) pay *= 1.03f; // 3% night shift bonus
+        return pay;
+    }
+}
+
+// Entering the main program 
+class Program
+{
+    static void Main()
+    {
+        List<Subcontractor> subcontractors = new List<Subcontractor>(); // list for subcontractors 
+
+        while (true) //menu that allows for user to display the list of subcontractors
+        {
+            Console.WriteLine("\nOptions:");
+            Console.WriteLine("1. Add Subcontractor");
+            Console.WriteLine("2. View All Subcontractors");
+            Console.WriteLine("3. Exit");
+            Console.Write("Select an option: ");
+
+            string choice = Console.ReadLine();
+
+            switch (choice) //switch functionality for menu options 
+            {
+                case "1":
+                    // Input logic for adding a subcontractor
+                    Console.Write("Enter name: ");
+                    string name = Console.ReadLine();
+
+                    Console.Write("Contractor number: ");
+                    string number = Console.ReadLine();
+
+                    Console.Write("Start date (MM/dd/yyyy): ");
+                    DateTime startDate = DateTime.Parse(Console.ReadLine()); // parse () for input handling 
+
+                    Console.Write("Shift (1=Day, 2=Night): ");
+                    int shift = int.Parse(Console.ReadLine());
+
+                    Console.Write("Hourly pay rate: ");
+                    double payRate = double.Parse(Console.ReadLine());
+
+                    Subcontractor sub = new Subcontractor(name, number, startDate, shift, payRate);
+                    subcontractors.Add(sub);
+                    Console.WriteLine("Subcontractor added successfully!");
+                    break;
+
+                case "2":
+                    // Display all subcontractors
+                    Console.WriteLine("\n--- List of Subcontractors ---");
+                    if (subcontractors.Count == 0)
+                    {
+                        Console.WriteLine("No subcontractors added yet.");
+                    }
+                    else
+                    {
+                        foreach (var s in subcontractors)
+                        {
+                            Console.WriteLine($"Name: {s.Name}, Number: {s.Number}");
+                            Console.WriteLine($"Start Date: {s.StartDate:MM/dd/yyyy}, Shift: {(s.Shift == 1 ? "Day" : "Night")}");
+                            Console.WriteLine($"Hourly Rate: ${s.HourlyPayRate:F2}\n");
+                        }
+                    }
+                    break;
+
+                case "3":
+                    Console.WriteLine("Exiting program...");
+                    return; // Exit program
+
+                default:
+                    Console.WriteLine("Invalid option. Try again.");
+                    break;
+            }
+        }
+    }
+}
